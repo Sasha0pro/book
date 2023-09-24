@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello MainController!{% endblock %}
+
+{% block body %}
+    <a href="/books">my books</a>
+    <a href="/create">create book</a>
+    {% for book in books %}
+        <h3>{{ book.getTitle() }}</h3>
+        <a href="/book/{{ book.getId() }}/content">content</a>
+    {% endfor %}
+{% endblock %}

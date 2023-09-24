@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello BookController!{% endblock %}
+
+{% block body %}
+    {% for book in books %}
+        <h3>{{ book.getTitle() }}</h3>
+        <a href="/book/{{ book.getId() }}/content">content</a>
+        <a href="/book/{{ book.getId() }}/update">update</a>
+        <a href="/book/{{ book.getId() }}/delete">delete</a>
+    {% endfor %}
+
+
+{% endblock %}
