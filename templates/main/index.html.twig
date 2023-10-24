@@ -5,10 +5,11 @@
 {% block body %}
     <a href="{{ path('user_book') }}">my book</a>
     <a href="{{ path('create_book') }}">create book</a>
-    {% for book in books %}
+    {% for book in books.result %}
         <h3>{{ book.getTitle() }}</h3>
         <a href="{{path('content_book', {'book_id': book.getId()}) }}">content</a>
-
     {% endfor %}
+
+    {% include 'utils/pagination.html.twig' with { 'p':books} %}
 
 {% endblock %}

@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Book;
-use App\Entity\User;
+use App\Utils\Paginator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -28,10 +28,17 @@ class BookRepository extends ServiceEntityRepository
             ->where("b.title like '%н%' ")
             ->join('b.users','u')
             ->groupBy('b')
-            ->having('count(u) > 1')
+            ->having('count(u) > 2')
             ->orderBy('b.title', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    public function getList(int $page): Paginator
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->orderBy('b.title', 'ASC');
+        return (new Paginator($qb))->pagination($page);
     }
 
 
