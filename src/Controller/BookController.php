@@ -11,6 +11,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 class BookController extends AbstractController
@@ -27,7 +29,7 @@ class BookController extends AbstractController
         ]);
     }
     #[Route('/create', name: 'create_book', methods:['POST','GET'] )]
-    public function create(Request $request, ManagerRegistry $managerRegistry ): Response
+    public function create(Request $request, EntityManagerInterface $manager, ValidatorInterface $validator ): Response
     {
         /** @var  $user User */
 
@@ -36,9 +38,10 @@ class BookController extends AbstractController
         $form = $this->createForm(BookType::class,$book)->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
-            $em = $managerRegistry->getManager();
-            $em->persist($book->addUser($user));
-            $em->flush();
+            $manager->persist($book->addUser($user));
+            $manager->flush();
+
+            $this->addFlash('success','Create book');
 
             return $this->redirectToRoute('app_main');
         }
@@ -60,14 +63,15 @@ class BookController extends AbstractController
     #[Route('/book/{book_id}/update', name: 'update_book', methods: ['POST','GET'])]
     #[ParamConverter('book', Book::class, options: ["id" => "book_id"])]
     #[IsGranted('EDIT','book')]
-    public function update(Book $book,Request $request, ManagerRegistry $managerRegistry): Response
+    public function update(Book $book,Request $request, EntityManagerInterface $manager): Response
     {
         $form = $this->createForm(BookType::class,$book)->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
-            $em = $managerRegistry->getManager();
-            $em->persist($book);
-            $em->flush();
+            $manager->persist($book);
+            $manager->flush();
+
+            $this->addFlash('success','Update book');
 
             return $this->redirectToRoute('app_main');
         }
@@ -80,11 +84,21 @@ class BookController extends AbstractController
     #[Route('/book/{book_id}/delete', name: 'delete_book', methods: ['GET'])] // DELETE почему-то не работает
     #[ParamConverter('book', Book::class, options: ['id' => 'book_id'])]
     #[IsGranted('DELETE','book')]
-    public function delete(Book $book, ManagerRegistry $managerRegistry ): Response
+    public function delete(Book $book, EntityManagerInterface $manager ): Response
     {
-            $em = $managerRegistry->getManager();
-            $em->remove($book);
-            $em->flush();
+            $manager->remove($book);
+            $manager->flush();
+            $this->addFlash('success','Delete book');
             return $this->redirectToRoute('app_main');
+    }
+
+    #[Route('/book/repository', name: 'delete_book', methods: ['GET'])] // DELETE почему-то не работает
+    public function repository(ManagerRegistry $managerRegistry): Response
+    {
+       $books = $managerRegistry->getRepository(Book::class)->findBookTwoAuthorAndN();
+
+        return $this->render('book/repository.html.twig',[
+            'books' => $books
+        ]);
     }
 }

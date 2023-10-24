@@ -5,9 +5,9 @@
 {% block body %}
     {% for book in books %}
         <h3>{{ book.getTitle() }}</h3>
-        <a href="/book/{{ book.getId() }}/content">content</a>
-        <a href="/book/{{ book.getId() }}/update">update</a>
-        <a href="/book/{{ book.getId() }}/delete">delete</a>
+        <a href="{{ path('content_book', {'book_id': book.getId()}) }}">content</a>
+        <a href="{{ path('update_book', {'book_id': book.getId()}) }}">update</a>
+        <a href="{{ path('delete_book', {'book_id': book.getId()}) }}">delete</a>
     {% endfor %}
 
 

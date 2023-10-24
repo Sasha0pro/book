@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Book;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -20,6 +21,19 @@ class BookRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Book::class);
     }
+
+    public function findBookTwoAuthorAndN()
+    {
+        return $this->createQueryBuilder('b')
+            ->where("b.title like '%н%' ")
+            ->join('b.users','u')
+            ->groupBy('b')
+            ->having('count(u) > 1')
+            ->orderBy('b.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
 
 //    /**
 //     * @return Book[] Returns an array of Book objects

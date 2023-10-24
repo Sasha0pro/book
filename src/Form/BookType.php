@@ -23,6 +23,7 @@ class BookType extends AbstractType
                 'class' => User::class,
                 'choice_label' => 'username',
                 'multiple' => true,
+                'expanded' => true
             ])
             ->add('Submit', SubmitType::class)
         ;

@@ -3,10 +3,12 @@
 {% block title %}Hello MainController!{% endblock %}
 
 {% block body %}
-    <a href="/books">my books</a>
-    <a href="/create">create book</a>
+    <a href="{{ path('user_book') }}">my book</a>
+    <a href="{{ path('create_book') }}">create book</a>
     {% for book in books %}
         <h3>{{ book.getTitle() }}</h3>
-        <a href="/book/{{ book.getId() }}/content">content</a>
+        <a href="{{path('content_book', {'book_id': book.getId()}) }}">content</a>
+
     {% endfor %}
+
 {% endblock %}

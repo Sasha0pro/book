@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 class Book
@@ -17,9 +18,11 @@ class Book
     private ?int $id = null;
 
     #[ORM\Column(length: 125)]
+    #[Assert\Length(min: 5,minMessage: 'the book title is too short')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\Length(min: 10, minMessage: 'the book content is too short')]
     private ?string $content = null;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'books')]
