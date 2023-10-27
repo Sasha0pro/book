@@ -22,22 +22,35 @@ class BookRepository extends ServiceEntityRepository
         parent::__construct($registry, Book::class);
     }
 
-    public function findBookTwoAuthorAndN()
+    public function findBookTwoAuthorAndN(int $page): Paginator
     {
-        return $this->createQueryBuilder('b')
-            ->where("b.title like '%н%' ")
-            ->join('b.users','u')
+        $qb = $this->createQueryBuilder('b')
+            ->where("b.title like '%н%'")
             ->groupBy('b')
-            ->having('count(u) > 2')
-            ->orderBy('b.title', 'ASC')
-            ->getQuery()
-            ->getResult();
+            ->join('b.users','u')
+            ->addGroupBy('u.id')
+            ->having('count(u) > 1')
+            ->orderBy('b.title', 'ASC');
+
+        return (new Paginator($qb))->pagination($page);
     }
 
     public function getList(int $page): Paginator
     {
         $qb = $this->createQueryBuilder('b')
             ->orderBy('b.title', 'ASC');
+
+        return (new Paginator($qb))->pagination($page);
+    }
+
+    public function getByUser(int $page, $user): Paginator
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->join('b.users','u')
+            ->where('u = :u')
+            ->setParameter('u', $user)
+            ->groupBy('b');
+
         return (new Paginator($qb))->pagination($page);
     }
 

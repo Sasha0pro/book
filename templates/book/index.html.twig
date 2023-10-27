@@ -3,12 +3,13 @@
 {% block title %}Hello BookController!{% endblock %}
 
 {% block body %}
-    {% for book in books %}
+    {% for book in books.result %}
         <h3>{{ book.getTitle() }}</h3>
         <a href="{{ path('content_book', {'book_id': book.getId()}) }}">content</a>
         <a href="{{ path('update_book', {'book_id': book.getId()}) }}">update</a>
         <a href="{{ path('delete_book', {'book_id': book.getId()}) }}">delete</a>
     {% endfor %}
 
+    {% include 'utils/pagination.html.twig' with { 'p':books} %}
 
 {% endblock %}

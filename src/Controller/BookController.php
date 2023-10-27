@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Book;
 use App\Entity\User;
 use App\Form\BookType;
+use App\Repository\BookRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -18,14 +19,15 @@ use Doctrine\Persistence\ManagerRegistry;
 class BookController extends AbstractController
 {
     #[Route('/books', name: 'user_book', methods: ['GET'])]
-    public function Books(): Response
+    public function Books(Request $request, BookRepository $bookRepository): Response
     {
         /** @var  $user User*/
 
         $user = $this->getUser();
+        $page = $request->get('page', 1);
 
         return $this->render('book/index.html.twig', [
-            'books' => $user->getBooks()->toArray(),
+            'books' => $bookRepository->getByUser($page, $user),
         ]);
     }
     #[Route('/create', name: 'create_book', methods:['POST','GET'] )]
@@ -92,13 +94,14 @@ class BookController extends AbstractController
             return $this->redirectToRoute('app_main');
     }
 
-    #[Route('/book/repository', name: 'delete_book', methods: ['GET'])] // DELETE почему-то не работает
-    public function repository(ManagerRegistry $managerRegistry): Response
+    #[Route('/book/repository', name: 'repository', methods: ['GET'])]
+    public function repository(ManagerRegistry $managerRegistry, Request $request): Response
     {
-       $books = $managerRegistry->getRepository(Book::class)->findBookTwoAuthorAndN();
+        $page = $request->get('page', 1);
+        $books = $managerRegistry->getRepository(Book::class)->findBookTwoAuthorAndN($page);
 
-        return $this->render('book/repository.html.twig',[
-            'books' => $books
+        return $this->render('book/repository.html.twig', [
+            'books' => $books,
         ]);
     }
 }

@@ -3,7 +3,13 @@
 {% block title %}Hello BookController!{% endblock %}
 
 {% block body %}
-{% for book in books %}
-    {{ book.Title() }}
+
+
+    {% for book in books.result %}
+        {{ book.getTitle() }}<br>
+        {{ book.getId() }}<br>
     {% endfor %}
+
+    {% include 'utils/pagination.html.twig' with { 'p':books} %}
+
 {% endblock %}

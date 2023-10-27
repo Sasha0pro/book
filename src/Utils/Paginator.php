@@ -11,7 +11,7 @@ use Doctrine\ORM\QueryBuilder;
  */
 class Paginator
 {
-    private const PAGE_SIZE = 2;
+    private const PAGE_SIZE = 3;
     private ArrayIterator $result;
     private int $numResult;
     private int $currentPage;
