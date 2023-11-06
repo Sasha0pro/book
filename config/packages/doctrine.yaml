@@ -33,6 +33,10 @@ when@prod:
             result_cache_driver:
                 type: pool
                 pool: doctrine.result_cache_pool
+                dql:
+                    string_functions:
+                        GroupConcat: DoctrineExtensions\Query\Mysql\GroupConcat
+
 
     framework:
         cache:

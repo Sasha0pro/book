@@ -24,13 +24,13 @@ class BookRepository extends ServiceEntityRepository
 
     public function findBookTwoAuthorAndN(int $page): Paginator
     {
-        $qb = $this->createQueryBuilder('b')
-            ->where("b.title like '%н%'")
-            ->groupBy('b')
+        $qb = $this
+            ->createQueryBuilder('b')
+            ->where('b.title like \'%н%\'')
             ->join('b.users','u')
-            ->addGroupBy('u.id')
-            ->having('count(u) > 1')
-            ->orderBy('b.title', 'ASC');
+            ->having('count(u.id) > 1')
+            ->orderBy('b.title', 'ASC')
+            ->groupBy('b.id');
 
         return (new Paginator($qb))->pagination($page);
     }
